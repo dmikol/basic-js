@@ -1,12 +1,14 @@
 module.exports = function transform(arr) {
     let result = [];
   
-    
     arr.forEach(function(item, index){
-        if(item == '--discard-next' && (arr[index+1] !== undefined)){
-            result.push('lol');
+        if(item == '--discard-next'){
+            
         }
-        if(item == '--discard-prev' && result.length > 0){
+        else if(arr[index-1] !== undefined && arr[index-1] == '--discard-next'){
+
+        }
+        else if(item == '--discard-prev' && result.length > 0){
             result.pop();
         }
         else if(item == '--double-next' && (arr[index+1] !== undefined)){
@@ -19,17 +21,6 @@ module.exports = function transform(arr) {
         }
 
     });
-    let res = [];
-    let n = 0;
-result.forEach(function(item, index){
-  
-if(item == "lol"){
-        n = 2;  
-}else if(n == 2){
-        n = 0;
-}else{
-    res.push(item);
+    
+ return result;
 }
-});
-return res;
-};
