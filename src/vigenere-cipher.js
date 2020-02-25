@@ -1,115 +1,77 @@
 class VigenereCipheringMachine {
     encrypt(word, key) {
+
         if(!word || !key){
             throw new Error();
         }
-        let result;
-        if(word.indexOf(':') != -1){
-            result = word.slice(0, word.indexOf(':'));
-        }else{
-            result = word.match(/[A-Za-z ]/g).join('');
-        }
-        let index = result.length;
-        let strLast = word.slice(index);
-        let arrSpaces = [];
-
-        for(let k = 0; k < result.length; k++){
-            if(result[k] == ' '){
-                arrSpaces.push(k);
-            }
-        }
-
-        result = result.split(' ').join('').toLowerCase();
-        let arrKey = [];
-        let arrCode = [];
-
-        let z = 0;
-        for(let n = 0; n < result.length; n++){
+        let subKey = [];
+        if(word.search(/[a-z]/gi) == -1){
             
-            if(key[n-(key.length)*z]){
-                arrKey.push(key[n-(key.length)*z]); 
-            }else{
-                z++;
-                arrKey.push(key[n-(key.length)*z]); 
-            }
-        }
-        let resultKey = arrKey.join('').toLowerCase();
-        let x = 0;
-        let m = 0;
+        }else{
 
-        while(m < result.length){
-            arrCode.push(String.fromCharCode((((result.charCodeAt(m)-97)+(resultKey.charCodeAt(m)-97)) % 26)+97));
-                m++;
-            if(m == arrSpaces[x]){
-                arrCode.push(' ');
-                x++;
-                arrSpaces[x] -= 1;
-            }
-        }
+            let z = 0;
+            let lengthSubKey = (word.match(/[a-z]/gi)).length;
 
-        return arrCode.join('').toUpperCase()+strLast;
+            for(let m = 0; m < lengthSubKey; m++){
+                if(key[m-(key.length)*z]){
+                            subKey.push((key[m-(key.length)*z]).toLowerCase()); 
+                        }else{
+                            z++;
+                            subKey.push((key[m-(key.length)*z]).toLowerCase()); 
+                        }
+            } 
+
+        }
+             let arrCode =[];
+             
+             for(let n = 0; n < word.length; n++){
+                 if(word[n].search(/[a-z]/gi) != -1){
+                     arrCode.push(String.fromCharCode((((word[n].toLowerCase().charCodeAt()-97)+(subKey[0].charCodeAt()-97)) % 26)+97));
+                     subKey.shift();
+      
+                 }else{
+                    arrCode.push(word[n]);
+                 }
+             }
+    
+             return arrCode.join('').toUpperCase();
         
     }
-
-    decrypt(word, key) {
-        if(!word || !key){
-            throw new Error();
-        }
-
-        let result;
-        if(word.indexOf(':') != -1){
-            result = word.slice(0, word.indexOf(':')-1);
-        }else{
-            result = word.match(/[A-Za-z ]/g).join('');
-        }
-        let index = result.length;
-        let strLast = word.slice(index);
-        let arrSpaces = [];
-
-        for(let k = 0; k < result.length; k++){
-            if(result[k] == ' '){
-                arrSpaces.push(k);
+    
+        decrypt(word, key) {
+            if(!word || !key){
+                throw new Error();
             }
-        }
-
-        result = result.split(' ').join('').toLowerCase();
-        let arrKey = [];
-        let arrCode = [];
-
-        let z = 0;
-        for(let n = 0; n < result.length; n++){
+            let subKey = [];
+            let z = 0;
+            let lengthSubKey = (word.match(/[a-z]/gi)).length;
             
-            if(key[n-(key.length)*z]){
-                arrKey.push(key[n-(key.length)*z]); 
-            }else{
-                z++;
-                arrKey.push(key[n-(key.length)*z]); 
-            }
-        }
-        let resultKey = arrKey.join('').toLowerCase();
-        let x = 0;
-        let m = 0;
+            for(let m = 0; m < lengthSubKey; m++){
+                if(key[m-(key.length)*z]){
+                            subKey.push((key[m-(key.length)*z]).toLowerCase()); 
+                        }else{
+                            z++;
+                            subKey.push((key[m-(key.length)*z]).toLowerCase()); 
+                        }
+            } 
+    
+             let arrCode =[];
+             
+             for(let n = 0; n < word.length; n++){
+                 if(word[n].search(/[a-z]/gi) != -1){
+                     arrCode.push(String.fromCharCode((((word[n].toLowerCase().charCodeAt()-97)+26-(subKey[0].charCodeAt()-97)) % 26)+97));
+                     subKey.shift();
+                 }else{
+                    arrCode.push(word[n]);
+                 }
+             }
+             return arrCode.join('').toUpperCase();
 
-        while(m < result.length){
-            arrCode.push(String.fromCharCode((((result.charCodeAt(m)-97)+26-(resultKey.charCodeAt(m)-97)) % 26)+97));
-                m++;
-            if(m == arrSpaces[x]){
-                arrCode.push(' ');
-                x++;
 
-                if(x == 1){
-                    arrSpaces[x] -= 1;
-                }else if(x == 2){
-                    arrSpaces[x] -= 2; 
-                }
-                
-            }
         }
 
-        return arrCode.join('').toUpperCase()+strLast;
-
-
-    }
+        
+    
     
 }
 
